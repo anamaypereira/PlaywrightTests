@@ -1,32 +1,83 @@
-import { test, expect } from '@playwright/test';
+import { test as base, expect, Page } from '@playwright/test';
+import { HomePage } from '../pages/homePage';
+import { FinancialServicesPage } from '../pages/finServPage';
+import { GetStartedPage } from '../pages/getStartedPage';
+import { get } from 'node:http';
 
-test.beforeAll(async ({ page }) => {
-  await page.goto('https://3cloudsolutions.com/');
-  await expect(page).toHaveTitle('3Cloud');
+const test = base.extend<{
+  homePage: HomePage,
+  finServPage: FinancialServicesPage,
+  getStartedPage: GetStartedPage,
+  newPage: Page,
+}>({
+  homePage: async ({ page }, use) => {
+    const homePage = new HomePage(page);
+    await use(homePage);
+  },
+  finServPage: async ({ page }, use) => {
+    const finServPage = new FinancialServicesPage(page);
+    await use(finServPage);
+  },
+  newPage: async ({ homePage, finServPage, context }, use) => {
+    await homePage.clickFinancialServices();
+    const newPage = await finServPage.clickLetsTalkAndGetNewPage(context);
+    await use(newPage);
+    await newPage.close();
+  },
+  getStartedPage: async ({ newPage }, use) => {
+    const getStartedPage = new GetStartedPage(newPage);
+    await use(getStartedPage);
+  }
 });
 
-test('Who We Serve header dropdown', async ({ page }) => {
-  await page.getByRole('link', {name: 'Who We Serve'}).hover();
-  await expect(page.getByText('INDUSTRIES')).toBeVisible(); 
+test.beforeEach(async ({ homePage }) => {
+  await homePage.goTo3Csite();
 });
 
-test('Financial Services link', async ({ page }) => {
-  //await page.getByRole('link', {name: 'Financial Services'}).click();
-  
-});
+test.describe('3Cloud website basic functionality tests', () => {
+  test.skip('Who We Serve header dropdown', async ({ homePage }) => {
+    await homePage.whoWeServeLink.hover();
+    await expect(homePage.financialServicesLink).toBeVisible();
+  });
 
-test('Lets talk button new page', async ({page}) => {
+  test.skip('Financial Services link', async ({ homePage }) => {
+    await homePage.clickFinancialServices();
+    await expect(homePage.page).toHaveTitle(/.*Financial Services*/i);
 
-});
+  });
 
-test('error message for incorrect email', async ({page}) => {
+  test.skip('Lets talk button new page', async ({ newPage }) => {
+    await expect(newPage).toHaveTitle(/.*Get Started*/i);
+  });
 
-});
+  test('error messages for no input', async ({ getStartedPage }) => {
+    await getStartedPage.fillDetails(' ', ' ', ' ', ' ', ' ', ' ', ' ');
+    await getStartedPage.verifyAllFieldsErrorMessages('Please complete this required field.');
+    await getStartedPage.clickSubmit();
+    await getStartedPage.submitErrorMessage('Please complete all required fields.');
+  });
 
-test('error message for phone number', async ({page}) => {
+  test('error message for gmail account', async ({ getStartedPage }) => {
+    await getStartedPage.fillDetails(
+      'Ana', 'Pereira', 'MyCompany', 'anapereira@gmail.com', 'QA', '1234567890', 'This is a comment');
+    await getStartedPage.verifySingleFieldErrorMessage('email', 
+      'Please enter a different email address. This form does not accept addresses from gmail.com.');
+  });
 
-});
+  test('error message for wrong email format', async ({ getStartedPage }) => {
+    await getStartedPage.fillDetails(
+      'Ana', 'Pereira', 'MyCompany', 'ana.com', 'QA', '1234567890', 'This is a comment');
+    await getStartedPage.verifySingleFieldErrorMessage('email', 'Email must be formatted correctly.');
+  });
 
-test('successful submission of Get Started inquiry', async ({page}) => {
+  test('error message for wrong phone number format', async ({ getStartedPage }) => {
+    await getStartedPage.fillDetails(
+      'Ana', 'Pereira', 'MyCompany', 'ana@3cloud.com', 'QA', 'stardew', 'This is a comment');
+    await getStartedPage.verifySingleFieldErrorMessage('phone',
+      'A valid phone number may only contain numbers, +()-. or x');
+  });
 
+
+  test.skip('all fields have correct input', async ({ getStartedPage }) => {
+  });
 });
