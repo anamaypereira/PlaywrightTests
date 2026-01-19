@@ -31,14 +31,21 @@ export class GetStartedPage {
         this.phoneNumberTextBox = formIframe.locator('//input[contains (@id, "phone")]');
         this.commentTextBox = formIframe.locator('//textarea[contains (@id, "message")]');
         this.submitButton = formIframe.locator('//input[@type="submit"]');
-        this.fnameErrorMessage = formIframe.locator('.hs-error-msg.hs-main-font-element').first();
-        this.lnameErrorMessage = formIframe.locator('.hs-error-msg.hs-main-font-element').nth(1);
-        this.companyErrorMessage = formIframe.locator('.hs-error-msg.hs-main-font-element').nth(2);
-        this.emailErrorMessage = formIframe.locator('.hs-error-msg.hs-main-font-element').nth(3);
-        this.jobTitleErrorMessage = formIframe.locator('.hs-error-msg.hs-main-font-element').nth(4);
-        this.phoneErrorMessage = formIframe.locator('.hs-error-msg.hs-main-font-element').nth(5);
-        this.commentErrorMessage = formIframe.locator('.hs-error-msg.hs-main-font-element').nth(6);
-        this.submitBtnErrorMessage = formIframe.locator('.hs-main-font-element').nth(7);
+        this.fnameErrorMessage = formIframe.locator(
+            '//span[contains (text(), "First")]/parent::label//following-sibling::ul//label');
+        this.lnameErrorMessage = formIframe.locator(
+            '//span[contains (text(), "Last")]/parent::label//following-sibling::ul//label');
+        this.companyErrorMessage = formIframe.locator(
+            '//span[contains (text(), "Company")]/parent::label//following-sibling::ul//label');
+        this.emailErrorMessage = formIframe.locator(
+            '//span[contains (text(), "Email")]/parent::label//following-sibling::ul//label');
+        this.jobTitleErrorMessage = formIframe.locator(
+          '//span[contains (text(), "Job title")]/parent::label//following-sibling::ul//label');
+        this.phoneErrorMessage = formIframe.locator(
+          '//span[contains (text(), "Phone number")]/parent::label//following-sibling::ul//label');
+        this.commentErrorMessage = formIframe.locator(
+          '//span[contains (text(), "Comments")]/parent::label//following-sibling::ul//label');
+        this.submitBtnErrorMessage = formIframe.locator('.hs_error_rollup');
      }
 
       async fillDetails(fname: string, lname: string, company: string, email: string, jobTitle: string, phone: string, comment: string){
@@ -80,6 +87,16 @@ export class GetStartedPage {
 
       async submitErrorMessage(expectedMessage: string){
         await expect(this.submitBtnErrorMessage).toHaveText(expectedMessage);
+      }
+
+      async verifyAllFieldsNoErrorMessage(){
+        await expect(this.fnameErrorMessage).toBeHidden();
+        await expect(this.lnameErrorMessage).toBeHidden();
+        await expect(this.companyErrorMessage).toBeHidden();
+        await expect(this.emailErrorMessage).toBeHidden();
+        await expect(this.jobTitleErrorMessage).toBeHidden();
+        await expect(this.phoneErrorMessage).toBeHidden();
+        await expect(this.commentErrorMessage).toBeHidden();
       }
         
 }

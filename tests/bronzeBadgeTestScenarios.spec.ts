@@ -77,7 +77,20 @@ test.describe('3Cloud website basic functionality tests', () => {
       'A valid phone number may only contain numbers, +()-. or x');
   });
 
+  test('error message for out of range phone number', async ({ getStartedPage }) => {
+    await getStartedPage.fillDetails(
+      'Ana', 'Pereira', 'MyCompany', 'ana@3cloud.com', 'QA', '123456789012345678901', 'This is a comment');
+    await getStartedPage.verifySingleFieldErrorMessage('phone',
+      'The number you entered is not in range.');
+      await getStartedPage.fillDetails(
+      'Ana', 'Pereira', 'MyCompany', 'ana@3cloud.com', 'QA', '123', 'This is a comment');
+    await getStartedPage.verifySingleFieldErrorMessage('phone',
+      'The number you entered is not in range.');
+  });
 
-  test.skip('all fields have correct input', async ({ getStartedPage }) => {
+  test('all fields have correct input', async ({ getStartedPage }) => {
+    await getStartedPage.fillDetails(
+      'Ana', 'Pereira', 'MyCompany', 'ana@3cloud.com', 'QA', '123456789', 'This is a comment');
+    await getStartedPage.verifyAllFieldsNoErrorMessage();
   });
 });
