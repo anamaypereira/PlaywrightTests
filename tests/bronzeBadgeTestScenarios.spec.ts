@@ -33,7 +33,7 @@ test.beforeEach(async ({ homePage }) => {
   await homePage.goTo3Csite();
 });
 
-test.describe('3Cloud website basic functionality tests', () => {
+test.describe('3Cloud website Get Started fields validation', () => {
   test.skip('Who We Serve header dropdown', async ({ homePage }) => {
     await homePage.whoWeServeLink.hover();
     await expect(homePage.financialServicesLink).toBeVisible();
