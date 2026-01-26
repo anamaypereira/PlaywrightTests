@@ -2,7 +2,6 @@ import { test as base, expect, Page } from '@playwright/test';
 import { HomePage } from '../pages/homePage';
 import { FinancialServicesPage } from '../pages/finServPage';
 import { GetStartedPage } from '../pages/getStartedPage';
-import { get } from 'node:http';
 
 const test = base.extend<{
   homePage: HomePage,
