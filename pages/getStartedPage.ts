@@ -1,5 +1,9 @@
 import { type Locator, type Page, expect } from '@playwright/test';
 
+export interface GetStartedForm {
+  fname: string, lname: string, company: string, email: string, jobTitle: string, phone: string, comment: string
+}
+
 export class GetStartedPage {
     readonly page: Page;
     readonly firstNameTextBox: Locator;
@@ -48,55 +52,18 @@ export class GetStartedPage {
         this.submitBtnErrorMessage = formIframe.locator('.hs_error_rollup');
      }
 
-      async fillDetails(fname: string, lname: string, company: string, email: string, jobTitle: string, phone: string, comment: string){
-        await this.firstNameTextBox.fill(fname);
-        await this.lastNameTextBox.fill(lname);
-        await this.companyNameTextBox.fill(company);
-        await this.emailTextBox.fill(email);
-        await this.jobTitleTextBox.fill(jobTitle);
-        await this.phoneNumberTextBox.fill(phone);
-        await this.commentTextBox.fill(comment);
+      async fillDetails(formData: GetStartedForm){
+        await this.firstNameTextBox.fill(formData.fname);
+        await this.lastNameTextBox.fill(formData.lname);
+        await this.companyNameTextBox.fill(formData.company);
+        await this.emailTextBox.fill(formData.email);
+        await this.jobTitleTextBox.fill(formData.jobTitle);
+        await this.phoneNumberTextBox.fill(formData.phone);
+        await this.commentTextBox.fill(formData.comment);
       }
 
       async clickSubmit(){
         await this.submitButton.click();
-      }
-
-      async verifyAllFieldsErrorMessages(expectedMessage: string){
-        await expect(this.fnameErrorMessage).toHaveText(expectedMessage);
-        await expect(this.lnameErrorMessage).toHaveText(expectedMessage);
-        await expect(this.companyErrorMessage).toHaveText(expectedMessage);
-        await expect(this.emailErrorMessage).toHaveText(expectedMessage);
-        await expect(this.jobTitleErrorMessage).toHaveText(expectedMessage);
-        await expect(this.phoneErrorMessage).toHaveText(expectedMessage);
-        await expect(this.commentErrorMessage).toHaveText(expectedMessage);
-      }
-
-      async verifySingleFieldErrorMessage(fieldName: 'fname' | 'lname' | 'company' | 'email' | 'jobTitle' | 'phone' | 'comment', expectedMessage: string){
-        const errorLocators = {
-          fname: this.fnameErrorMessage,
-          lname: this.lnameErrorMessage,
-          company: this.companyErrorMessage,
-          email: this.emailErrorMessage,
-          jobTitle: this.jobTitleErrorMessage,
-          phone: this.phoneErrorMessage,
-          comment: this.commentErrorMessage
-        };
-        await expect(errorLocators[fieldName]).toHaveText(expectedMessage);
-      }
-
-      async submitErrorMessage(expectedMessage: string){
-        await expect(this.submitBtnErrorMessage).toHaveText(expectedMessage);
-      }
-
-      async verifyAllFieldsNoErrorMessage(){
-        await expect(this.fnameErrorMessage).toBeHidden();
-        await expect(this.lnameErrorMessage).toBeHidden();
-        await expect(this.companyErrorMessage).toBeHidden();
-        await expect(this.emailErrorMessage).toBeHidden();
-        await expect(this.jobTitleErrorMessage).toBeHidden();
-        await expect(this.phoneErrorMessage).toBeHidden();
-        await expect(this.commentErrorMessage).toBeHidden();
       }
         
 }
