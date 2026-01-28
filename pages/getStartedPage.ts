@@ -25,7 +25,6 @@ export class GetStartedPage {
 
      constructor(page: Page) {
         this.page = page;
-        // Form is inside an iframe, so we need to use frameLocator
         const formIframe = page.frameLocator('iframe').first();
         this.firstNameTextBox = formIframe.locator('//input[contains (@id, "firstname")]');
         this.lastNameTextBox = formIframe.locator('//input[contains (@id, "lastname")]');
