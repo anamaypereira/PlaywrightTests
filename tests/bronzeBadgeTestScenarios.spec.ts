@@ -108,8 +108,7 @@ test.describe('3Cloud website Get Started fields validation', () => {
   });
 
   test('all fields have correct input', async ({ getStartedPage }) => {
-    const formData = getValidFormData();
-    await getStartedPage.fillDetails(formData);
+    await getStartedPage.fillDetails(getValidFormData());
     await verifyAllFieldsNoErrorMessage(getStartedPage);
   });
 
@@ -123,6 +122,7 @@ test.describe('3Cloud website Get Started fields validation', () => {
   
 });
 
+// Helper functions
 const verifyAllFieldsErrorMessages = async (getStartedPage: GetStartedPage, expectedMessage: string) => {
   await expect(getStartedPage.fnameErrorMessage).toHaveText(expectedMessage);
   await expect(getStartedPage.lnameErrorMessage).toHaveText(expectedMessage);
