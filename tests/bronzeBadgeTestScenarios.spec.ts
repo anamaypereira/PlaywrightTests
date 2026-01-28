@@ -72,58 +72,58 @@ test.describe('3Cloud website Get Started fields validation', () => {
     };
     await getStartedPage.fillDetails(formNullData);
     await getStartedPage.clickSubmit();
-    await verifyAllFieldsErrorMessages(getStartedPage, 'Please complete this required field.');
-    await submitErrorMessage(getStartedPage, 'Please complete all required fields.');
+    await verifyAllFieldsErrorMsgs(getStartedPage, 'Please complete this required field.');
+    await verifySubmitErrorMsg(getStartedPage, 'Please complete all required fields.');
   });
 
   test('error message for gmail account', async ({ getStartedPage }) => {
     const formData = { ...getValidFormData(), email: 'anapereira@gmail.com' };
     await getStartedPage.fillDetails(formData);
-    await verifySingleFieldErrorMessage(getStartedPage, 'email',
+    await verifySingleFieldErrorMsg(getStartedPage, 'email',
       'Please enter a different email address. This form does not accept addresses from gmail.com.');
   });
 
   test('error message for wrong email format', async ({ getStartedPage }) => {
     const formData = { ...getValidFormData(), email: 'ana.com' };
     await getStartedPage.fillDetails(formData);
-    await verifySingleFieldErrorMessage(getStartedPage, 'email', 'Email must be formatted correctly.');
+    await verifySingleFieldErrorMsg(getStartedPage, 'email', 'Email must be formatted correctly.');
   });
 
   test('error message for wrong phone number format', async ({ getStartedPage }) => {
     const formData = { ...getValidFormData(), phone: 'stardewvalley' };
     await getStartedPage.fillDetails(formData);
-    await verifySingleFieldErrorMessage(getStartedPage, 'phone',
+    await verifySingleFieldErrorMsg(getStartedPage, 'phone',
       'A valid phone number may only contain numbers, +()-. or x');
   });
 
   test('error message for out of range phone number', async ({ getStartedPage }) => {
     const formData = { ...getValidFormData(), phone: '123456789012345678901' };
     await getStartedPage.fillDetails(formData);
-    await verifySingleFieldErrorMessage(getStartedPage, 'phone',
+    await verifySingleFieldErrorMsg(getStartedPage, 'phone',
       'The number you entered is not in range.');
     formData.phone = '123';
     await getStartedPage.fillDetails(formData);
-    await verifySingleFieldErrorMessage(getStartedPage, 'phone',
+    await verifySingleFieldErrorMsg(getStartedPage, 'phone',
       'The number you entered is not in range.');
   });
 
   test('all fields have correct input', async ({ getStartedPage }) => {
     await getStartedPage.fillDetails(getValidFormData());
-    await verifyAllFieldsNoErrorMessage(getStartedPage);
+    await verifyAllFieldsNoErrorMsg(getStartedPage);
   });
 
   test('incorrect email, null company and job title', async ({ getStartedPage }) => {
     const formData = { ...getValidFormData() , company: '', email: 'anapereira.com', jobTitle: '' };
     await getStartedPage.fillDetails(formData);
-    await verifySingleFieldErrorMessage(getStartedPage, 'email', 'Email must be formatted correctly.');
-    await verifySingleFieldErrorMessage(getStartedPage, 'company', 'Please complete this required field.');
-    await verifySingleFieldErrorMessage(getStartedPage, 'jobTitle', 'Please complete this required field.');
+    await verifySingleFieldErrorMsg(getStartedPage, 'email', 'Email must be formatted correctly.');
+    await verifySingleFieldErrorMsg(getStartedPage, 'company', 'Please complete this required field.');
+    await verifySingleFieldErrorMsg(getStartedPage, 'jobTitle', 'Please complete this required field.');
   });
   
 });
 
 // Helper functions
-const verifyAllFieldsErrorMessages = async (getStartedPage: GetStartedPage, expectedMessage: string) => {
+const verifyAllFieldsErrorMsgs = async (getStartedPage: GetStartedPage, expectedMessage: string) => {
   await expect(getStartedPage.fnameErrorMessage).toHaveText(expectedMessage);
   await expect(getStartedPage.lnameErrorMessage).toHaveText(expectedMessage);
   await expect(getStartedPage.companyErrorMessage).toHaveText(expectedMessage);
@@ -133,7 +133,7 @@ const verifyAllFieldsErrorMessages = async (getStartedPage: GetStartedPage, expe
   await expect(getStartedPage.commentErrorMessage).toHaveText(expectedMessage);
 };
 
-const verifySingleFieldErrorMessage = async (getStartedPage: GetStartedPage, fieldName: 'fname' | 'lname' | 'company' | 'email' | 'jobTitle' | 'phone' | 'comment', expectedMessage: string) => {
+const verifySingleFieldErrorMsg = async (getStartedPage: GetStartedPage, fieldName: 'fname' | 'lname' | 'company' | 'email' | 'jobTitle' | 'phone' | 'comment', expectedMessage: string) => {
   const errorLocators = {
     fname: getStartedPage.fnameErrorMessage,
     lname: getStartedPage.lnameErrorMessage,
@@ -146,11 +146,11 @@ const verifySingleFieldErrorMessage = async (getStartedPage: GetStartedPage, fie
   await expect(errorLocators[fieldName]).toHaveText(expectedMessage);
 };
 
-const submitErrorMessage = async (getStartedPage: GetStartedPage, expectedMessage: string) => {
+const verifySubmitErrorMsg = async (getStartedPage: GetStartedPage, expectedMessage: string) => {
   await expect(getStartedPage.submitBtnErrorMessage).toHaveText(expectedMessage);
 };
 
-const verifyAllFieldsNoErrorMessage = async (getStartedPage: GetStartedPage) => {
+const verifyAllFieldsNoErrorMsg = async (getStartedPage: GetStartedPage) => {
   await expect(getStartedPage.fnameErrorMessage).toBeHidden();
   await expect(getStartedPage.lnameErrorMessage).toBeHidden();
   await expect(getStartedPage.companyErrorMessage).toBeHidden();
