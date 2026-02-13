@@ -1,34 +1,5 @@
-import { test as base, expect, Page } from '@playwright/test';
-import { HomePage } from '../pages/homePage';
-import { FinancialServicesPage } from '../pages/finServPage';
-import { GetStartedPage, GetStartedForm } from '../pages/getStartedPage';
-import { get } from 'node:http';
-
-const test = base.extend<{
-  homePage: HomePage,
-  finServPage: FinancialServicesPage,
-  getStartedPage: GetStartedPage,
-  newPage: Page,
-}>({
-  homePage: async ({ page }, use) => {
-    const homePage = new HomePage(page);
-    await use(homePage);
-  },
-  finServPage: async ({ page }, use) => {
-    const finServPage = new FinancialServicesPage(page);
-    await use(finServPage);
-  },
-  newPage: async ({ homePage, finServPage, context }, use) => {
-    await homePage.clickFinancialServices();
-    const newPage = await finServPage.clickLetsTalkAndGetNewPage(context);
-    await use(newPage);
-    await newPage.close();
-  },
-  getStartedPage: async ({ newPage }, use) => {
-    const getStartedPage = new GetStartedPage(newPage);
-    await use(getStartedPage);
-  }
-});
+import { test, expect } from '../fixtures/pageFixtures';
+import { GetStartedPage, GetStartedForm } from '../pages/3cloudSite/getStartedPage';
 
 const getValidFormData = (): GetStartedForm => ({
   fname: 'Ana',
